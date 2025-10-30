@@ -34,13 +34,11 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ["customer", "admin"],
-      default: " customer",
+      default: "customer",
     },
   },
   { timestamps: true }
 );
-
-const user = mongoose.model("User", userSchema);
 
 // hash password before saving user to db
 userSchema.pre("save", async function (next) {
@@ -59,4 +57,5 @@ userSchema.pre("save", async function (next) {
 userSchema.method.comparePassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
+const user = mongoose.model("User", userSchema);
 export default user;

@@ -9,7 +9,7 @@ const app = express();
 app.get("/", (req, res) => {
   res.send("Ready to serve");
 });
-
+app.use(express.json());
 app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT;

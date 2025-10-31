@@ -56,12 +56,57 @@ export const signup = async (req, res, next) => {
       message: "User created successfully",
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res
+      .status(500)
+      .json({ message: "Error while signing up", error: error.message });
   }
 };
 export const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (user && (await user.comparePassword(password))) {
+      const { accessToken, refreshToken } = generateTokens(user._id);
+      await storeRefreshToken(user._id, refreshToken);
+      setCookies(res, accessToken, refreshToken);
+
+      res.json(
+        {
+          user: {
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          },
+        },
+        { message: "logged in successfully" }
+      );
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error while logging in", error: error.message });
+  }
   res.send("login route");
 };
 export const logout = async (req, res, next) => {
-  res.send("logout route");
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (refreshToken) {
+      const decoded = jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET
+      );
+      await redis.del(`refreshToken ${decoded.userId}`);
+    }
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    res.json({ message: "Logged out successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        message: "Server error while logging out: ",
+        error: error.message,
+      });
+  }
 };

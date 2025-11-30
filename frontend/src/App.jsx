@@ -5,8 +5,14 @@ import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import { Toaster } from "react-hot-toast";
 import { useUserStore } from "./store/useUserStore";
+import { useEffect } from "react";
+import LoadingSpinner from "./components/LoadingSpinner";
 function App() {
-  const { user } = useUserStore();
+  const { user, checkAuth, checkingAuth } = useUserStore();
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+  if (checkingAuth) return <LoadingSpinner />;
   return (
     <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
@@ -18,7 +24,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signup" element={user ? <HomePage /> : <SignUp />} />
           <Route path="/login" element={user ? <HomePage /> : <Login />} />
         </Routes>
       </div>

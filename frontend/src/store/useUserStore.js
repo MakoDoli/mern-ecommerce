@@ -26,6 +26,18 @@ export const useUserStore = create((set, get) => ({
       toast.error(error.data.error || "An error occurred");
     }
   },
+
+  login: async (email, password) => {
+    set({ loading: true });
+
+    try {
+      const res = await axiosInstance.post("/auth/login", { email, password });
+      set({ user: res.data, loading: false });
+    } catch (error) {
+      set({ loading: false });
+      toast.error(error.data.error || "An error occurred");
+    }
+  },
 }));
 
 // export const useUserStore = create((set, get) => ({

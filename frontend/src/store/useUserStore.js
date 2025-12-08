@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import axiosInstance from "../../lib/axios";
 import { toast } from "react-hot-toast";
+import axios from "axios";
 
 export const useUserStore = create((set, get) => ({
   user: null,
@@ -35,6 +36,27 @@ export const useUserStore = create((set, get) => ({
       set({ user: res.data, loading: false });
     } catch (error) {
       set({ loading: false });
+      toast.error(error.data.error || "An error occurred");
+    }
+  },
+
+  checkAuth: async () => {
+    set({ checkingAuth: true });
+    try {
+      const res = await axiosInstance.post("/auth/profile");
+      set({ user: res.data, checkingAuth: false });
+    } catch (error) {
+      set({ user: null, checkingAuth: false });
+      console.log(error);
+    }
+  },
+
+  logout: async () => {
+    try {
+      await axiosInstance.post("auth/logout");
+      set({ user: null });
+    } catch (error) {
+      console.log(error);
       toast.error(error.data.error || "An error occurred");
     }
   },

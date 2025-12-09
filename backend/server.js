@@ -15,14 +15,21 @@ const app = express();
 app.get("/", (req, res) => {
   res.send("Ready to serve");
 });
-app.use(express.json());
-app.use(cookieParser());
-app.use("/api/auth", authRoutes);
-app.use("api/products", productRoutes);
-app.use("/api/cart", cartRoutes);
-app.use("/api/coupon", couponRoutes);
-app.use("/api/payments", paymentRoutes);
-app.use("/api/analytics", analyticsRoutes);
+
+// config();
+// const app = express();
+
+// app.get("/", (req, res) => {
+//   res.send("Ready to serve");
+// });
+// app.use(express.json());
+// app.use(cookieParser());
+// app.use("/api/auth", authRoutes);
+// app.use("api/products", productRoutes);
+// app.use("/api/cart", cartRoutes);
+// app.use("/api/coupon", couponRoutes);
+// app.use("/api/payments", paymentRoutes);
+// app.use("/api/analytics", analyticsRoutes);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

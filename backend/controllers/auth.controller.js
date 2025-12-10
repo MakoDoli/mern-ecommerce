@@ -145,6 +145,7 @@ export const refreshToken = async (req, res) => {
 //TODO implement getProfile controller
 export const getProfile = async (req, res) => {
   try {
+    console.log("REQ USER", req.user);
     res.json(req.user);
   } catch (error) {
     console.log(error);

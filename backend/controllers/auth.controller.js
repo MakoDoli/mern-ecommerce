@@ -64,30 +64,34 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    if (user && (await user.comparePassword(password))) {
-      const { accessToken, refreshToken } = generateTokens(user._id);
-      await storeRefreshToken(user._id, refreshToken);
-      setCookies(res, accessToken, refreshToken);
 
-      res.json(
-        {
-          user: {
-            name: user.name,
-            email: user.email,
-            role: user.role,
-          },
-        },
-        { message: "Logged in successfully" }
-      );
+    const user = await User.findOne({ email });
+
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(401).json({ error: "Invalid email or password" });
     }
+
+    const { accessToken, refreshToken } = generateTokens(user._id);
+    await storeRefreshToken(user._id, refreshToken);
+    setCookies(res, accessToken, refreshToken);
+
+    // Correct JSON response
+    return res.json({
+      user: {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      message: "Logged in successfully",
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error while logging in", error: error.message });
+    return res.status(500).json({
+      error: "Error while logging in",
+      details: error.message,
+    });
   }
-  res.send("login route");
 };
+
 export const logout = async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;

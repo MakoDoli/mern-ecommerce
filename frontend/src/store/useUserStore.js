@@ -7,7 +7,7 @@ export const useUserStore = create((set, get) => ({
   loading: false,
   checkingAuth: true,
 
-  signup: async (name, email, password, confirmPassword) => {
+  signup: async ({ name, email, password, confirmPassword }) => {
     set({ loading: true });
 
     if (password !== confirmPassword) {
@@ -21,10 +21,14 @@ export const useUserStore = create((set, get) => ({
         email,
         password,
       });
-      set({ user: res.data, loading: false });
+      set({ user: res.data.user, loading: false });
     } catch (error) {
       set({ loading: false });
-      toast.error(error.response.data.error || "An error occurred");
+      toast.error(
+        error.response?.data?.error ||
+          error.response?.data?.message ||
+          "An error occurred"
+      );
     }
   },
   login: async (email, password) => {

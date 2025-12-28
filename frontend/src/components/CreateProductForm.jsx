@@ -26,6 +26,7 @@ const CreateProductForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(newProduct);
     try {
       await createProduct(newProduct);
       setNewProduct({
@@ -42,15 +43,18 @@ const CreateProductForm = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
+    if (!file) return;
 
-      reader.onloadend = () => {
-        setNewProduct({ ...newProduct, image: reader.result });
-      };
+    const reader = new FileReader();
 
-      reader.readAsDataURL(file); // base64
-    }
+    reader.onloadend = () => {
+      setNewProduct((prev) => ({
+        ...prev,
+        image: reader.result, // base64 string
+      }));
+    };
+
+    reader.readAsDataURL(file);
   };
 
   return (

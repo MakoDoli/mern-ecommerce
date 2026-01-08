@@ -1,5 +1,13 @@
-import React from "react";
+import { useProductStore } from "../store/useProductStore";
 
 export default function ProductsList() {
-  return <div>ProductsList</div>;
+  const { products } = useProductStore();
+  console.log(products);
+  return (
+    <div>
+      {products.map((product) => (
+        <div key={product.name}>{product.name}</div>
+      ))}
+    </div>
+  );
 }

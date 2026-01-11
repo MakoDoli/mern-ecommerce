@@ -12,12 +12,13 @@ import {
 
 const router = express.Router();
 
+// TODO add protectRoute and adminRoute middlewares
 router.get("/", getAllProducts);
 router.get("/featured", getFeaturedProducts);
 router.get("/category/:category", getProductsByCategory);
 router.get("/recommendations", getRecommendedProducts);
-router.patch("/:id", protectRoute, adminRoute, toggleFeaturedProduct);
+router.patch("/:id", toggleFeaturedProduct);
 router.post("/", createProduct);
-router.delete("/:id", protectRoute, adminRoute, deleteProduct);
+router.delete("/:id", deleteProduct);
 
 export default router;

@@ -40,16 +40,17 @@ export const useProductStore = create((set) => ({
     try {
       const response = await axios.patch(`/products/${id}`);
       set((state) => ({
-        products: state.products.map((product) => {
+        products: state.products.map((product) =>
           product._id === id
             ? { ...product, isFeatured: response.data.isFeatured }
-            : product;
-        }),
+            : product
+        ),
       }));
       set({ loading: false });
     } catch (error) {
       console.log(error);
-      toast.error("Failed to feature product");
+      toast.error(error?.response?.data?.error || "Failed to feature product");
+      set({ loading: false });
     }
   },
   deleteProduct: async (id) => {

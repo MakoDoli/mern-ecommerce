@@ -121,7 +121,7 @@ export const deleteProduct = async (req, res) => {
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
-    if (image) {
+    if (product.image) {
       const imagePublicId = product.image.split("/").pop().split(".")[0];
 
       try {
